@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300&display=swap" rel="stylesheet">
+		<style>
+			html {
+				font-family: 'DM Mono', monospace;
+				font-size: 25px}
+			#output1 {margin-left: 20%; margin-right: 20%;}
+		</style>
+	</head>
+<body>
+	Pawns promote only to dead (or not spawned) pieces.
+	No pawn double moves. No castling.<br>
+	<div id='output1'></div>
+	<br> 
+	<div id='link1'> To see this exact position in Lichess editor click the </div>
+</body>
+<script>
+	var table = [];
+	for (let i=0; i<8; i++){
+		table[i]=[];
+	}
+	for (let i=0; i<8; i++){
+		for (let j=0; j<8; j++){
+			table[i][j]='_';
+		}
+	}
+	//board created
+	
+	function getRandomInt(max) {
+		return Math.floor(Math.random() * max);
+	}
+	var setblack = '_ppppppppnnbbrrq'
+	var setwhite = '_PPPPPPPPNNBBRRQ'
+	var nokings = setblack+setwhite
+	var piecesblack = 'nnbbrrq'
+	var pieceswhite = 'NNBBRRQ'
+	var nopawns = piecesblack + pieceswhite
+	
+	var sets = 'PpPpPpPpPpPpPpPpNnNnBbBbRrRrQqKk'
+	for (let i=1; i<7; i++){
+		for (let j=0; j<8; j++){
+			table[i][j]=nokings[getRandomInt(nokings.length)];
+		}
+	}
+	
+	for (let j=0; j<8; j++){
+		table[0][j]=piecesblack[getRandomInt(piecesblack.length)];
+	}
+	for (let j=0; j<8; j++){
+		table[7][j]=pieceswhite[getRandomInt(pieceswhite.length)];
+	
+	}
+	
+	for (let i=0; i<3; i++){
+		for (let j=0; j<3; j++){
+			table[i][j]=piecesblack[getRandomInt(piecesblack.length)];
+		}
+	}
+	for (let i=5; i<8; i++){
+		for (let j=5; j<8; j++){
+			table[i][j]=pieceswhite[getRandomInt(pieceswhite.length)];
+		}
+	}
+	
+	table[0][0] = 'k'
+	table[7][7] = 'K'
+	
+	function p(x,y){document.getElementById(y).innerHTML += x;};
+	
+	// creating FEN for URL
+	for (const row of table){
+		p(row+'<br>','output1')
+	}
+	
+	z = '%2f'
+	fen = ''
+	num = 0
+	for (const row of table){
+		//add fen of row from notebook
+		for (var i=0; i<8;i++){
+			if (row[i] != '_'){
+				
+				fen+=row[i]
+			} else {
+				if (i==0 || row[i-1]!='_') {var acc = 1}
+				
+				while(row[i+1]=='_'){
+					acc++;
+					i++
+				}
+				fen +=acc
+			
+			}
+		} fen+=z;
+	}
+	
+	url = 'https://lichess.org/editor?fen=' + fen + '+w+-+-+0+1'
+	
+	p("<a href='"+url+"'>link</a>"+'<br>', 'link1')
+</script>
+</html>
